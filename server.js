@@ -111,15 +111,18 @@ app.post("/verify-login", async (req, res) => {
   }
 });
 
-// --- Apple App Site Association (needed for iOS passkey domain validation) ---
 app.get("/.well-known/apple-app-site-association", (req, res) => {
-  res.setHeader("Content-Type", "application/json");
+  res.type("application/json");
   res.send(JSON.stringify({
     webcredentials: {
-      apps: ["AB33BBCCU7.com.forgerock.ios.sdk.Quickstarted"]
+      apps: ["AB33BBCCU7.guarded-fortress-75705-c422ef56e8e1.herokuapp.com"]
+    },
+    applinks: {
+      apps: [],
+      details: []
     },
     activitycontinuation: {
-      apps: ["AB33BBCCU7.com.forgerock.ios.sdk.Quickstarted"]
+      apps: ["AB33BBCCU7.guarded-fortress-75705-c422ef56e8e1.herokuapp.com"]
     }
   }));
 });
