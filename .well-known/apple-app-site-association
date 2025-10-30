@@ -1,10 +1,10 @@
 {
   "activitycontinuation": {
         "apps": [
-            "AB33BBCCU7.passkey.local"
+            "AB33BBCCU7.guarded-fortress-75705-c422ef56e8e1.herokuapp.com"
         ]
     },
   "webcredentials": {
-    "apps": ["AB33BBCCU7.passkey.local"]
+    "apps": ["AB33BBCCU7.guarded-fortress-75705-c422ef56e8e1.herokuapp.com"]
   }
 }
