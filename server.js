@@ -1,20 +1,23 @@
 import express from "express";
-import https from "https";
-import fs from "fs";
 import bodyParser from "body-parser";
 import { Fido2Lib } from "fido2-lib";
-import bonjour from "bonjour";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
+import https from "https";
 
 // --- Fix for __dirname in ES Modules ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- Bonjour setup (advertises your server to the network) ---
-const bonjourService = bonjour();
 const app = express();
 app.use(bodyParser.json());
+
+// --- Log all requests ---
+app.use((req, res, next) => {
+  console.log(`🔥 ${req.method} ${req.url} at ${new Date().toISOString()}`);
+  next();
+});
 
 // --- FIDO2 Setup ---
 const fido = new Fido2Lib({
@@ -71,7 +74,7 @@ app.post("/verify-register", async (req, res) => {
   try {
     const attRes = await fido.attestationResult(req.body, {
       challenge: currentRegisterChallenge,
-      origin: "https://passkey.local",
+      origin: process.env.APP_ORIGIN || "https://passkey.local",
       factor: "either",
     });
 
@@ -94,7 +97,7 @@ app.post("/verify-login", async (req, res) => {
 
     await fido.assertionResult(req.body, {
       challenge: currentLoginChallenge,
-      origin: "https://passkey.local",
+      origin: process.env.APP_ORIGIN || "https://passkey.local",
       factor: "either",
       publicKey: userData.credentialPublicKey,
       prevCounter: userData.counter,
@@ -109,32 +112,42 @@ app.post("/verify-login", async (req, res) => {
   }
 });
 
+// --- Apple association file ---
 app.get("/.well-known/apple-app-site-association", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.send(`{
-  "activitycontinuation": {
-        "apps": [
-            "AB33BBCCU7.passkey.local"
-        ]
+    "activitycontinuation": {
+      "apps": ["AB33BBCCU7.passkey.local"]
     },
-  "webcredentials": {
-    "apps": ["AB33BBCCU7.passkey.local"]
-  }
+    "webcredentials": {
+      "apps": ["AB33BBCCU7.passkey.local"]
+    }
+  }`);
+});
+
+// --- Root route ---
+app.get("/", (req, res) => {
+  console.log("🚀 Root endpoint hit");
+  res.send("Hello from Passkey Server on Heroku or Local!");
+});
+
+// --- Server Setup ---
+const PORT = process.env.PORT || 3000;
+const isHeroku = !!process.env.DYNO;
+
+if (isHeroku) {
+  // --- Running on Heroku (HTTP only) ---
+  app.listen(PORT, () => {
+    console.log(`✅ Server running on Heroku (HTTP) port ${PORT}`);
+  });
+} else {
+  // --- Running locally (HTTPS) ---
+  const options = {
+    key: fs.readFileSync(path.join(__dirname, "./passkey.local+1-key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "./passkey.local+1.pem")),
+  };
+
+  https.createServer(options, app).listen(PORT, () => {
+    console.log(`✅ Local HTTPS server running at https://passkey.local:${PORT}`);
+  });
 }
-`);  // Hardcode the JSON for testing
-});
-
-// --- HTTPS Setup ---
-const options = {
-  key: fs.readFileSync("./passkey.local+1-key.pem"),
-  cert: fs.readFileSync("./passkey.local+1.pem"),
-};
-
-// --- Start Server ---
-https.createServer(options, app).listen(443, "0.0.0.0", () => {
-  console.log("✅ Server running at https://passkey.local");
-});
-
-// --- Bonjour Service ---
-bonjourService.publish({ name: 'Passkey Server', type: 'https', port: 443, host: 'passkey.local' });
-console.log("✅ Bonjour service published");
