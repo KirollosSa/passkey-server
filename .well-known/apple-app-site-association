@@ -1,0 +1,10 @@
+{
+  "activitycontinuation": {
+        "apps": [
+            "AB33BBCCU7.passkey.local"
+        ]
+    },
+  "webcredentials": {
+    "apps": ["AB33BBCCU7.passkey.local"]
+  }
+}
