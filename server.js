@@ -6,14 +6,13 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import https from "https";
 
-// --- Fix for __dirname in ES Modules ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(bodyParser.json());
 
-// --- Log all requests ---
+// --- Log all requests (optional, useful for debugging) ---
 app.use((req, res, next) => {
   console.log(`🔥 ${req.method} ${req.url} at ${new Date().toISOString()}`);
   next();
@@ -21,14 +20,14 @@ app.use((req, res, next) => {
 
 // --- FIDO2 Setup ---
 const fido = new Fido2Lib({
-  rpId: "passkey.local",
-  rpName: "My Local Passkey App",
+  rpId: "guarded-fortress-75705-c422ef56e8e1.herokuapp.com", // ✅ your Heroku domain
+  rpName: "Passkey Demo (Heroku)",
   timeout: 60000,
   challengeSize: 64,
   attestation: "none",
 });
 
-// --- Mock “database” ---
+// --- Mock “database” (for demo only) ---
 const users = new Map();
 let currentRegisterChallenge = null;
 let currentLoginChallenge = null;
@@ -74,7 +73,7 @@ app.post("/verify-register", async (req, res) => {
   try {
     const attRes = await fido.attestationResult(req.body, {
       challenge: currentRegisterChallenge,
-      origin: process.env.APP_ORIGIN || "https://passkey.local",
+      origin: "https://guarded-fortress-75705-c422ef56e8e1.herokuapp.com", // ✅ Heroku origin
       factor: "either",
     });
 
@@ -97,7 +96,7 @@ app.post("/verify-login", async (req, res) => {
 
     await fido.assertionResult(req.body, {
       challenge: currentLoginChallenge,
-      origin: process.env.APP_ORIGIN || "https://passkey.local",
+      origin: "https://guarded-fortress-75705-c422ef56e8e1.herokuapp.com", // ✅ Heroku origin
       factor: "either",
       publicKey: userData.credentialPublicKey,
       prevCounter: userData.counter,
@@ -112,36 +111,31 @@ app.post("/verify-login", async (req, res) => {
   }
 });
 
-// --- Apple association file ---
+// --- Apple App Site Association (needed for iOS passkey domain validation) ---
 app.get("/.well-known/apple-app-site-association", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.send(`{
-    "activitycontinuation": {
-      "apps": ["AB33BBCCU7.passkey.local"]
-    },
     "webcredentials": {
-      "apps": ["AB33BBCCU7.passkey.local"]
+      "apps": ["AB33BBCCU7.com.forgerock.ios.sdk.Quickstarted"]
     }
   }`);
 });
 
 // --- Root route ---
 app.get("/", (req, res) => {
-  console.log("🚀 Root endpoint hit");
-  res.send("Hello from Passkey Server on Heroku or Local!");
+  res.send("🚀 Passkey Server running on Heroku");
 });
 
-// --- Server Setup ---
+// --- Heroku deployment ---
 const PORT = process.env.PORT || 3000;
 const isHeroku = !!process.env.DYNO;
 
 if (isHeroku) {
-  // --- Running on Heroku (HTTP only) ---
   app.listen(PORT, () => {
-    console.log(`✅ Server running on Heroku (HTTP) port ${PORT}`);
+    console.log(`✅ Server running on Heroku at https://guarded-fortress-75705-c422ef56e8e1.herokuapp.com`);
   });
 } else {
-  // --- Running locally (HTTPS) ---
+  // For local HTTPS testing
   const options = {
     key: fs.readFileSync(path.join(__dirname, "./passkey.local+1-key.pem")),
     cert: fs.readFileSync(path.join(__dirname, "./passkey.local+1.pem")),
