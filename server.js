@@ -114,12 +114,16 @@ app.post("/verify-login", async (req, res) => {
 // --- Apple App Site Association (needed for iOS passkey domain validation) ---
 app.get("/.well-known/apple-app-site-association", (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  res.send(`{
-    "webcredentials": {
-      "apps": ["AB33BBCCU7.com.forgerock.ios.sdk.Quickstarted"]
+  res.send(JSON.stringify({
+    webcredentials: {
+      apps: ["AB33BBCCU7.com.forgerock.ios.sdk.Quickstarted"]
+    },
+    activitycontinuation: {
+      apps: ["AB33BBCCU7.com.forgerock.ios.sdk.Quickstarted"]
     }
-  }`);
+  }));
 });
+
 
 // --- Root route ---
 app.get("/", (req, res) => {
