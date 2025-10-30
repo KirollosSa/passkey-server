@@ -1,10 +1,10 @@
 {
   "activitycontinuation": {
         "apps": [
-            "AB33BBCCU7.guarded-fortress-75705-c422ef56e8e1.herokuapp.com"
+            "AB33BBCCU7.com.forgerock.ios.sdk.Quickstarted"
         ]
     },
   "webcredentials": {
-    "apps": ["AB33BBCCU7.guarded-fortress-75705-c422ef56e8e1.herokuapp.com"]
+    "apps": ["AB33BBCCU7.com.forgerock.ios.sdk.Quickstarted"]
   }
 }
