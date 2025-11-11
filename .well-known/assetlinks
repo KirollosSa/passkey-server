@@ -5,10 +5,10 @@
             "delegate_permission/common.get_login_creds"
         ],
         "target": {
-            "namespace": "android_app",
-            "package_name": "com.example.app",
+            "namespace": "com.mo.pingsdkexample",
+            "package_name": "com.mo.pingsdkexample",
             "sha256_cert_fingerprints": [
-                "E6:5A:5D:37:22:FC...22:99:20:03:E6:47"
+                "6E:42:24:E1:D2:05:24:2F:5E:C8:A5:FC:98:C3:64:D0:C5:81:AC:46:27:4F:57:4B:44:AE:38:57:F2:09:C4:9C"
             ]
         }
     }
