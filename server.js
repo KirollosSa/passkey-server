@@ -127,6 +127,25 @@ app.get("/.well-known/apple-app-site-association", (req, res) => {
   }));
 });
 
+app.get("/.well-known/assetlinks", (req, res) => {
+  res.type("application/json");
+  res.send(JSON.stringify([
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls",
+            "delegate_permission/common.get_login_creds"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.example.app",
+            "sha256_cert_fingerprints": [
+                "E6:5A:5D:37:22:FC...22:99:20:03:E6:47"
+            ]
+        }
+    }
+]));
+});
+
 
 // --- Root route ---
 app.get("/", (req, res) => {
