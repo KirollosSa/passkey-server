@@ -136,11 +136,9 @@ app.get("/.well-known/assetlinks.json", (req, res) => {
             "delegate_permission/common.get_login_creds"
         ],
         "target": {
-            "namespace": "com.mo.pingsdkexample",
+            "namespace": "android_app",
             "package_name": "com.mo.pingsdkexample",
-            "sha256_cert_fingerprints": [
-                "6E:42:24:E1:D2:05:24:2F:5E:C8:A5:FC:98:C3:64:D0:C5:81:AC:46:27:4F:57:4B:44:AE:38:57:F2:09:C4:9C"
-            ]
+               "sha256_cert_fingerprints": ["6E4224E1D205242F5EC8A5FC98C364D0C581AC46274F574B44AE3857F209C49C"]
         }
     }
 ]));
