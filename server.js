@@ -127,7 +127,7 @@ app.get("/.well-known/apple-app-site-association", (req, res) => {
   }));
 });
 
-app.get("/.well-known/assetlinks", (req, res) => {
+app.get("/.well-known/assetlinks.json", (req, res) => {
   res.type("application/json");
   res.send(JSON.stringify([
     {
