@@ -138,7 +138,7 @@ app.get("/.well-known/assetlinks.json", (req, res) => {
         "target": {
             "namespace": "android_app",
             "package_name": "com.mo.pingsdkexample",
-            "sha256_cert_fingerprints":["F4C9541DD4DE70FC3A6F3BA43804074D3E9FAF909434D64A8C6CB1EE43E489CA"]
+            "sha256_cert_fingerprints":["6E4224E1D205242F5EC8A5FC98C364D0C581AC46274F574B44AE3857F209C49C"]
         }
     }
 ]));
