@@ -7,7 +7,7 @@
     "target": {
       "namespace": "android_app",
       "package_name": "com.mo.pingsdkexample",
-      "sha256_cert_fingerprints": ["F4:C9:54:1D:D4:DE:70:FC:3A:6F:3B:A4:38:04:07:4D:3E:9F:AF:90:94:34:D6:4A:8C:6C:B1:EE:43:E4:89:CA"]
+      "sha256_cert_fingerprints":["F4C9541DD4DE70FC3A6F3BA43804074D3E9FAF909434D64A8C6CB1EE43E489CA"]
     }
   }
 ]
